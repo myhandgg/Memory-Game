@@ -70,7 +70,8 @@ body {
     border-radius: 5px;
 }
 
-.lost {
+.lost ,
+.win {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -86,7 +87,8 @@ body {
     display: none;
 }
 
-.lost p {
+.lost p ,
+.win p {
     background-color: white;
     padding: 15px 20px;
     width: 150px;
@@ -94,14 +96,27 @@ body {
     border-radius: 5px;
 }
 
-.lost .play-again {
+.lost .play-again ,
+.win .play-again {
     cursor: pointer;
     background-color: #f3d328;
     transition: .3s;
 }
 
-.lost .play-again:hover {
+.lost .play-again:hover ,
+.win .play-again:hover {
     opacity: .9;
+}
+
+.win .win-container {
+    background: #EEE;
+    padding: 20px;
+    width: 400px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
 }
 
 .container header {
@@ -282,12 +297,17 @@ footer .fails p{
     }
 }
 
-@media (max-width:300px) {
-    .container .time p ,
-    footer .tries p {
-        font-size: 14px;
+@media (max-width:540px) {
+    footer .time-tries {
+        gap: 15px;
     }
-} 
+    .container .time p,
+    footer .tries p,
+    footer .fails p {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
 
 /* End Footer */
 /* JS */
@@ -302,4 +322,8 @@ footer .fails p{
 
 .pointer-event {
     pointer-events: none;
+}
+
+.no-event {
+    pointer-events: auto;
 }

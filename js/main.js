@@ -10,10 +10,12 @@ window.onload = () => {
 let boxes = document.querySelectorAll(".cards-container .box")
 
 document.querySelector(".start-game").onclick = () => {
+    // Takes your name
     let promptMessage = prompt("Enter your name")
-    document.querySelector("header p span").textContent = promptMessage
+    document.querySelector("header .name span").textContent = promptMessage
+    window.localStorage.setItem("name" , promptMessage)
     if (promptMessage === null || promptMessage === "") {
-        document.querySelector("header p span").textContent = "Unknown"
+        document.querySelector("header .name span").textContent = "Unknown"
     }
     document.querySelector(".overlay").style.display = "none"
     document.querySelector(".start-game").style.display = "none"
@@ -48,7 +50,6 @@ lis.forEach((e) => {
         boxes.forEach((e) => {
             e.style.order = Math.floor(Math.random() * boxes.length)
             e.style.transform = "rotateY(180deg)"
-            e.style.transform = "rotateY(180deg)"
             e.classList.add("pointer-event")
             setTimeout(() => {
                 e.style.transform = "rotateY(0)"
@@ -76,16 +77,11 @@ let intervalTime = setInterval(() => {
     if (time.textContent <= 0) {
         time.textContent = 0
         document.querySelector(".lost").style.display = "flex"
-        document.querySelector("body").style.overflow = "hidden"
         boxes.forEach((e) => {
             e.style.transform = "rotateY(180deg)"
         })
     }
 }, 1000)
-
-cardsContainer.onclick = () => {
-    time.textContent = 60
-}
 
 // Game functions
 
@@ -94,6 +90,15 @@ let tries = document.querySelector(".tries p span")
 let fails = document.querySelector(".fails p span")
 
 let disable = false
+
+let arr = []
+
+let wins = document.querySelector("header .wins span")
+
+let scoreWin = document.querySelector(".win .win-container .wins-score span")
+
+wins.textContent = window.localStorage.getItem("wins")
+scoreWin.textContent = +wins.textContent + 1
 
 boxes.forEach((e) => {
     e.style.order = Math.floor(Math.random() * boxes.length)
@@ -119,7 +124,23 @@ boxes.forEach((e) => {
                     a.classList.add("has-match")
                     b.classList.add("has-match")
                     
+                    if (e.classList.contains("has-match")){
+                        arr.push(e)
+                        if (arr.length === 8) {
+                            arr.length = 0
+                            clearInterval(intervalTime)
+                            setTimeout(() => {
+                                document.querySelector(".win").style.display = "flex"
 
+                            }, 1000);
+                            window.scrollTo({
+                                top: 0,
+                                left: 0
+                            })
+                            wins.textContent = +wins.textContent + 1
+                            window.localStorage.setItem("wins" , wins.textContent)
+                        }
+                    }
 
                     tries.textContent -= 1
                     if (tries.textContent <= 0) {
@@ -131,20 +152,14 @@ boxes.forEach((e) => {
                             top: 0,
                             left: 0
                         })
-                        document.querySelector("body").style.overflow = "hidden"
-                        boxes.forEach((e) => {
-                            e.style.transform = "rotateY(180deg)"
-                        })
-                        disable = true
-                        if (disable) {
-                            clearInterval(intervalTime)
-                        }
-                        document.querySelector(".play-again").onclick = () => {
-                            document.querySelector(".lost").style.display = "none"
+                        setTimeout(() => {
                             boxes.forEach((e) => {
-                                e.style.transform = "rotateY(0)"
-                                e.style.order = Math.floor(Math.random() * boxes.length)
+                                e.style.transform = "rotateY(-180deg)"
                             })
+                        }, 1000)
+                        disable = true
+                        if (disable === true) {
+                            clearInterval(intervalTime)
                         }
                     }
                 } else {
@@ -159,7 +174,6 @@ boxes.forEach((e) => {
                             top: 0,
                             left: 0
                         })
-                        document.querySelector("body").style.overflow = "hidden"
                         setTimeout(() => {
                             boxes.forEach((e) => {
                                 e.style.transform = "rotateY(-180deg)"
@@ -185,9 +199,29 @@ boxes.forEach((e) => {
 })
 
 
-document.querySelector(".play-again").onclick = () => {
+document.querySelector(".lost .play-again").onclick = playAgain 
+document.querySelector(".win .play-again").onclick = playAgain
+
+function playAgain() {
+    setInterval(() => {
+        time.textContent -= 1
+    }, 1000);
+    if (time.textContent === 0) {
+        time.textContent = 0
+    }
     document.querySelector(".lost").style.display = "none"
+    document.querySelector(".win").style.display = "none"
     icon.style.display = "block"
+    boxes.forEach((e) => {
+        e.style.order = Math.floor(Math.random() * boxes.length)
+        e.style.transform = "rotateY(180deg)"
+        e.classList.add("pointer-event")
+        setTimeout(() => {
+            e.style.transform = "rotateY(0)"
+            e.classList.remove("pointer-event")
+            e.classList.remove("has-match")
+        }, 5000);
+    })
     if (difficulty.textContent === lis[0].textContent) {
         easy()
     } else if (difficulty.textContent === lis[1].textContent) {
